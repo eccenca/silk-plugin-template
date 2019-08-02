@@ -1,19 +1,46 @@
-import sbt.Keys.libraryDependencies
 
 lazy val root = project.in(file("."))
+  .dependsOn(
+    workbenchWorkspace % "compile->compile;test->test",
+    pluginsXml % "test->test",
+    workbenchWorkflow % "compile->compile;test->test",
+    workbenchRules,
+    plugins,
+    core % "compile->compile;test->test",
+    workspace % "test->test"
+  )
+  .aggregate(core, plugins, workbenchWorkspace, workbenchWorkflow, workbenchRules, plugins, pluginsXml, workspace)
   .settings(
     organization := "com.eccenca",
     name := "Silk Plugin Template",
     version := "1.0",
     scalaVersion := "2.11.11",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+      // Testing
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.7" % "test",
+    libraryDependencies += "net.codingwell" %% "scala-guice" % "4.0.0" % "test",
+    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.11",
+    libraryDependencies += "org.mockito" % "mockito-all" % "1.9.5" % Test,
+    libraryDependencies += "com.google.inject" % "guice" % "4.0" % "test",
+    libraryDependencies += "javax.inject" % "javax.inject" % "1",
+
+    dependencyOverrides ++= Set(
+      "com.google.guava" % "guava" % "18.0",
+      "com.google.inject" % "guice" % "4.0",
+      "io.netty" % "netty" % "3.10.5.Final",
+      "io.netty" % "netty-all" % "4.0.43.Final",
+      "org.apache.thrift" % "libthrift" % "0.9.3",
+      "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5",
+      "commons-net" % "commons-net" % "3.1",
+      "com.google.code.findbugs" % "jsr305" % "3.0.0",
+      "javax.servlet" % "javax.servlet-api" % "3.1.0" // FIXME: Needs to be re-evaluated when changing the Fuseki version (currently 3.7.0), comes from jetty-servlets 9.4.7.v20170914
+    )
   )
 
 //////////////////////////////////////////////////////////////////////////////
 // Silk Modules
 //////////////////////////////////////////////////////////////////////////////
 
-val silkUri = uri("https://github.com/silk-framework/silk.git")
+val silkUri = file("silk")
 // Core modules
 lazy val core = ProjectRef(silkUri, "core")
 lazy val rules = ProjectRef(silkUri, "rules")

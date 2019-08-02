@@ -1,0 +1,4 @@
+[submodule "silk"]
+	path = silk
+	url = https://github.com/silk-framework/silk.git
+	branch = develop
