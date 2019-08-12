@@ -1,5 +1,10 @@
 
+import sbtbuildinfo.BuildInfoPlugin.autoImport.buildInfoKeys
+
+val buildInfoSettings = Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, git.gitHeadCommit)
+
 lazy val root = project.in(file("."))
+  .enablePlugins(BuildInfoPlugin)
   .dependsOn(
     workbenchWorkspace % "compile->compile;test->test",
     pluginsXml % "test->test",
@@ -13,6 +18,7 @@ lazy val root = project.in(file("."))
   .settings(
     organization := "com.eccenca",
     name := "Silk Plugin Template",
+    buildInfoKeys := buildInfoSettings,
     version := "1.0",
     scalaVersion := "2.11.11",
       // Testing
@@ -22,6 +28,7 @@ lazy val root = project.in(file("."))
     libraryDependencies += "org.mockito" % "mockito-all" % "1.9.5" % Test,
     libraryDependencies += "com.google.inject" % "guice" % "4.0" % "test",
     libraryDependencies += "javax.inject" % "javax.inject" % "1",
+    // add here your dependencies
 
     dependencyOverrides ++= Set(
       "com.google.guava" % "guava" % "18.0",
